@@ -53,7 +53,7 @@ angular.module('copay.controllers')
     var credentials = Session.getCredentials($scope.digits);
     if (!credentials) return $scope.onInvalidPin();
 
-    $ionicLoading.show({
+    var loading = $ionicLoading.show({
       template: '<i class="icon ion-loading-c"></i> Opening profile...'
     });
 

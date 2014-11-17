@@ -30,6 +30,7 @@ angular.module('ui.gravatar').config([
       size     : 100,
       "default": 'mm'
     };
+    gravatarServiceProvider.secure = true;
   }
 ]);
 
