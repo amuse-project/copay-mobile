@@ -23,6 +23,7 @@ angular.module('copay.controllers')
   };
 
   $scope.onInvalidPin = function() {
+    $ionicLoading.hide();
     Notifications.toast('Invalid PIN');
     return $scope.clear();
   };
@@ -50,12 +51,12 @@ angular.module('copay.controllers')
   };
 
   $scope.onPIN = function() {
-    var credentials = Session.getCredentials($scope.digits);
-    if (!credentials) return $scope.onInvalidPin();
-
-    var loading = $ionicLoading.show({
+    $ionicLoading.show({
       template: '<i class="icon ion-loading-c"></i> Opening profile...'
     });
+
+    var credentials = Session.getCredentials($scope.digits);
+    if (!credentials) return $scope.onInvalidPin();
 
     Identity.openProfile(credentials, function(err, identity, wallet) {
       $ionicLoading.hide();
@@ -74,7 +75,7 @@ angular.module('copay.controllers')
 
 })
 
-.controller('SetPinCtrl', function($controller, $scope, $state, $stateParams, Session) {
+.controller('SetPinCtrl', function($controller, $scope, $state, $stateParams, Session, Notifications) {
   angular.extend(this, $controller('AbstractPinCtrl', {$scope: $scope}));
 
   var PIN = null;
