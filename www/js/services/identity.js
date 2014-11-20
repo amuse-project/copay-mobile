@@ -45,7 +45,7 @@ angular.module('copay.services')
     opts.email = p.email;
     opts.password = p.password;
     var call = Identity.open.bind(Identity, opts, callback);
-    setTimeout(call, 100);
+    setTimeout(call, 500);
   }
 
   return Identity;

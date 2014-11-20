@@ -32,21 +32,26 @@ angular.module('copay.services')
     $window.localStorage.removeItem('session:data');
   }
 
-  Session.prototype.setCredentials = function(pin, credentials) {
-    var data = JSON.stringify(credentials);
-
-    var key = crypto.kdf(pin);
-    $window.localStorage.setItem('session:data', crypto.encrypt(key, data));
+  Session.prototype.setCredentials = function(pin, credentials, callback) {
+    setTimeout(function() {
+      var data = JSON.stringify(credentials);
+      var key = crypto.kdf(pin);
+      $window.localStorage.setItem('session:data', crypto.encrypt(key, data));
+      callback();
+    }, 500);
   };
 
-  Session.prototype.getCredentials = function(pin) {
-    var data = $window.localStorage.getItem('session:data');
-    if (!data) return null;
+  Session.prototype.getCredentials = function(pin, callback) {
+    setTimeout(function() {
+      var data = $window.localStorage.getItem('session:data');
+      if (!data) callback('No data');
 
-    var key = crypto.kdf(pin);
-    data = crypto.decrypt(key, data);
-    var matches = !!data;
-    return matches ? JSON.parse(data) : null;
+      var key = crypto.kdf(pin);
+      data = crypto.decrypt(key, data);
+
+      var result = data ? JSON.parse(data) : null;
+      callback(!data, result);
+    }, 500);
   };
 
   return new Session();

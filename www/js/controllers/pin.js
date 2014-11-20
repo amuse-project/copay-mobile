@@ -23,9 +23,10 @@ angular.module('copay.controllers')
   };
 
   $scope.onInvalidPin = function() {
-    $ionicLoading.hide();
     Notifications.toast('Invalid PIN');
-    return $scope.clear();
+    $ionicLoading.hide();
+    $scope.clear();
+    $scope.$apply();
   };
 
   $scope.goHome = function() {
@@ -52,24 +53,29 @@ angular.module('copay.controllers')
 
   $scope.onPIN = function() {
     $ionicLoading.show({
-      template: '<i class="icon ion-loading-c"></i> Opening profile...'
+      template: '<i class="icon ion-loading-c"></i> Checking...'
     });
 
-    var credentials = Session.getCredentials($scope.digits);
-    if (!credentials) return $scope.onInvalidPin();
-
-    Identity.openProfile(credentials, function(err, identity, wallet) {
-      $ionicLoading.hide();
+    Session.getCredentials($scope.digits, function(err, credentials) {
       if (err) return $scope.onInvalidPin();
 
-      Session.signin(identity);
+      $ionicLoading.show({
+        template: '<i class="icon ion-loading-c"></i> Opening profile...'
+      });
 
-      // TODO: This may be replaced by the Decoder
-      if ($stateParams.data) {
-        $state.go('profile.payment', $stateParams);
-      } else {
-        $scope.goHome();
-      }
+      Identity.openProfile(credentials, function(err, identity, wallet) {
+        $ionicLoading.hide();
+        if (err) return $scope.onInvalidPin();
+
+        Session.signin(identity);
+
+        // TODO: This may be replaced by the Decoder
+        if ($stateParams.data) {
+          $state.go('profile.payment', $stateParams);
+        } else {
+          $scope.goHome();
+        }
+      });
     });
   };
 
