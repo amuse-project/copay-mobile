@@ -39,13 +39,11 @@ angular.module('copay.controllers')
         return;
       }
       if (!amountSat) {
-        console.error(err);
         $ionicPopup.alert({
           title: 'Couldn\'t retrieve funds',
           template: 'There are no funds left for that private key'
         });
-        $state.go('profile.wallet');
-        return;
+        return $state.go('profile.wallet.home', {walletId: $scope.data.wallet.id});
       }
       $scope.data.estimatedFee = Sweep.estimateFees(wif, outputs);
       $scope.data.balance = amountSat;
